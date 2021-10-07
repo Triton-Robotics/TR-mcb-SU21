@@ -1,0 +1,15 @@
+<library>
+  <repositories>
+    <repository>
+      <path>../taproot/repo.lb</path>
+    </repository>
+  </repositories>
+  <options>
+    <option name="taproot:project_name">sentry</option>
+    <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option>
+    <option name="taproot:core:generate_driver_hpp">False</option>
+  </options>
+  <modules>
+    <module>taproot:core</module>
+  </modules>
+</library>
