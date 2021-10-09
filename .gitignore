@@ -9,3 +9,5 @@ docs/_build
 docs/api
 docs/doxyoutput
 gcov-result
+sentry-code/build
+sentry-code/cmake-build-debug
