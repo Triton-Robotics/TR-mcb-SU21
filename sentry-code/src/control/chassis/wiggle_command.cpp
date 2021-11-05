@@ -10,6 +10,7 @@ namespace tr::control {
     m_isFinished(false), moveForwardCommand(chassis, 1_ft), moveBackwardCommand(chassis, -1_ft),
     currentCommand(&moveForwardCommand), nextCommand(&moveBackwardCommand), chassis(chassis)
     {
+        comprisedCommandScheduler.registerSubsystem(static_cast<tap::control::Subsystem*>(&chassis));
         Command::addSubsystemRequirement(&chassis);
     }
 
@@ -18,7 +19,7 @@ namespace tr::control {
         currentCommand = &moveForwardCommand;
         nextCommand = &moveBackwardCommand;
 
-        comprisedCommandScheduler.addCommand(currentCommand);
+        comprisedCommandScheduler.addCommand(static_cast<tap::control::Command*>(currentCommand));
     }
 
     void WiggleCommand::execute() {
@@ -27,7 +28,7 @@ namespace tr::control {
             auto temp = nextCommand;
             nextCommand = currentCommand;
             currentCommand = temp;
-            comprisedCommandScheduler.addCommand(currentCommand);
+            comprisedCommandScheduler.addCommand(static_cast<tap::control::Command*>(currentCommand));
         }
         comprisedCommandScheduler.run();
     }

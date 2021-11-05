@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SENTRY_CHASSIS_SUBSYSTEM_COMMAND_H
+#define SENTRY_CHASSIS_SUBSYSTEM_COMMAND_H
 
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/dji_motor.hpp"
@@ -8,15 +9,11 @@
 #include "wiggle_command.hpp"
 
 using namespace units::literals;
+using namespace units::length;
+using namespace units::angular_velocity;
 using units::velocity::meters_per_second_t;
-using units::length::millimeter_t;
-using units::length::meter_t;
-using units::angular_velocity::revolutions_per_minute_t;
-using units::angular_velocity::radians_per_second_t;
 using units::angle::radian_t;
 using tap::motor::DjiMotor;
-
-constexpr float PI = 3.14159265;
 
 namespace tr::control {
 class ChassisSubsystem : public tap::control::Subsystem {
@@ -27,8 +24,8 @@ class ChassisSubsystem : public tap::control::Subsystem {
          */
         explicit ChassisSubsystem(tap::Drivers* drivers);
 
-        ChassisSubsystem(const ChassisSubsystem &other) = delete;
-        ChassisSubsystem &operator=(const ChassisSubsystem &other) = delete;
+        ChassisSubsystem(const ChassisSubsystem& other) = delete;
+        ChassisSubsystem &operator=(const ChassisSubsystem& other) = delete;
         ~ChassisSubsystem() override = default;
 
         /**
@@ -56,7 +53,7 @@ class ChassisSubsystem : public tap::control::Subsystem {
             auto angular_vel = v / WHEEL_RADIUS * 1_rad;
             static_assert(units::traits::is_angular_velocity_unit<decltype(angular_vel)>::value,
                     "Computed angular velocity does not have unit representing angular velocity.");
-            setDesiredRpm(v / WHEEL_RADIUS * 1_rad);
+            setDesiredRpm(angular_vel);
         };
 
         /**
@@ -75,12 +72,12 @@ class ChassisSubsystem : public tap::control::Subsystem {
         [[nodiscard]] mockable inline meter_t getCurrentPos() const { return currentPos; };
 
     private:
-        static constexpr tap::motor::MotorId FRONT_MOTOR_ID = tap::motor::MOTOR1;
-        static constexpr tap::motor::MotorId BACK_MOTOR_ID = tap::motor::MOTOR2;
+        static constexpr tap::motor::MotorId FRONT_MOTOR_ID = tap::motor::MOTOR2;
+        static constexpr tap::motor::MotorId BACK_MOTOR_ID = tap::motor::MOTOR1;
         static constexpr tap::can::CanBus MOTOR_CAN_BUS = tap::can::CanBus::CAN_BUS1;
-        static constexpr meter_t WHEEL_RADIUS = 50_mm; //TODO: make this actual value
+        static constexpr meter_t WHEEL_RADIUS = 60_mm; //TODO: make this actual value
         // TODO: fix this -- math might not be right (not sure if ENC_RESOLUTION is correct for M3508)
-        static constexpr meter_t DISTANCE_PER_ENCODER_TICK = 2.0*PI / DjiMotor::ENC_RESOLUTION * WHEEL_RADIUS;
+        static constexpr meter_t DISTANCE_PER_ENCODER_TICK = 2.0*units::constants::pi/ DjiMotor::ENC_RESOLUTION * WHEEL_RADIUS;
 
         DjiMotor frontMotor;
         DjiMotor backMotor;
@@ -99,3 +96,5 @@ class ChassisSubsystem : public tap::control::Subsystem {
         int32_t desiredShaftRpm;
     };
 }
+
+#endif //SENTRY_CHASSIS_SUBSYSTEM_COMMAND_H
