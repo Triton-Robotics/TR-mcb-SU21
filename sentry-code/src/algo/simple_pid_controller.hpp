@@ -36,7 +36,7 @@ namespace tr::algo {
          * @param dt The time elapsed since the previous iteration
          * @return The next output for the controlled system
          */
-        T iteratePidController(T error, uint32_t dt) {
+        T iterate(T error, uint32_t dt) {
             p = kp * (float) error;
             i += ki * (float) error * (float) dt;
             d = kd / (float) dt * (error - prev_error);
