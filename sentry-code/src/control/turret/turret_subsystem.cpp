@@ -6,6 +6,7 @@
 
 using tap::arch::clock::getTimeMilliseconds;
 
+const auto M_2PI_RAD = units::angle::radian_t(M_2_PI);
 namespace tr::control::turret {
     TurretSubsystem::TurretSubsystem(tap::Drivers *drivers) : tap::control::Subsystem(drivers),
                                                               rotationMotor(drivers, ROTATION_MOTOR_ID, MOTOR_CAN_BUS, false, "rotation motor"),
@@ -39,16 +40,17 @@ namespace tr::control::turret {
     }
 
     void TurretSubsystem::setTargetPosition(radian_t rotation, radian_t inclination) {
-        targetRotation = rotation;
-        targetInclination = inclination;
+        setTargetRotation(rotation);
+        setTargetInclination(inclination);
     }
 
     void TurretSubsystem::setTargetRotation(radian_t rotation) {
         targetRotation = rotation;
+        normalizeRotation();
     }
 
     void TurretSubsystem::setTargetInclination(radian_t inclination) {
-        targetInclination = inclination;
+        targetInclination = std::clamp(inclination, INCLINATION_MIN, INCLINATION_MAX);
     }
 
     void TurretSubsystem::fire() {
@@ -65,5 +67,14 @@ namespace tr::control::turret {
 
     radian_t TurretSubsystem::getCurrentInclination() {
         return inclinationMotor.getEncoderUnwrapped() * RADIANS_PER_ENCODER_TICK;
+    }
+
+    /// This is an expensive operation, try not to do it too much
+    void TurretSubsystem::normalizeRotation() {
+        if (units::math::fabs(targetRotation) > M_2PI_RAD) {
+            targetRotation = units::math::fmod(targetRotation, M_2PI_RAD);
+        }
+        // Look ma, no branches!
+        targetRotation = targetRotation + (M_2PI_RAD*(targetRotation > 0_rad));
     }
 }
