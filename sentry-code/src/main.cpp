@@ -45,7 +45,7 @@
 #include "tap/architecture/clock.hpp"
 
 /* project-level includes */
-#include "subsystems/chassis/chassis_subsystem.hpp"
+#include "control/chassis/chassis_subsystem.hpp"
 
 using tap::Drivers;
 
@@ -77,8 +77,9 @@ int main()
     Board::initialize();
     initializeIo(drivers);
 
-    // Initialize / register subsystems
+    // Initialize / register control
     tr::control::ChassisSubsystem chassisSubsystem(drivers);
+    chassisSubsystem.initialize();
     drivers->commandScheduler.registerSubsystem(static_cast<tap::control::Subsystem*>(&chassisSubsystem));
 
 #ifdef PLATFORM_HOSTED

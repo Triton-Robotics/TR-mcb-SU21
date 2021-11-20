@@ -48,7 +48,7 @@
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Program - Debug",
-            "executable": "./template-project/build/hardware/debug/template-project.elf",
+            "executable": "./sentry-code/build/hardware/debug/template-project.elf",
             "device": "STM32F427II",
             "configFiles": [
                 "./template-project/openocd.cfg"
