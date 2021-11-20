@@ -5,6 +5,7 @@
 #ifndef SENTRY_TURRET_SUBSYSTEM_HPP
 #define SENTRY_TURRET_SUBSYSTEM_HPP
 
+#include <cmath>
 #include "algo/simple_pid_controller.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/dji_motor.hpp"
@@ -40,10 +41,15 @@ namespace tr::control::turret {
         [[nodiscard]] mockable inline radian_t getCurrentInclination();
 
     private:
+        inline void normalizeRotation();
+
         static constexpr tap::motor::MotorId ROTATION_MOTOR_ID = tap::motor::MOTOR1;
         static constexpr tap::motor::MotorId INCLINATION_MOTOR_ID = tap::motor::MOTOR2;
         static constexpr tap::can::CanBus MOTOR_CAN_BUS = tap::can::CanBus::CAN_BUS2;
         static constexpr radian_t RADIANS_PER_ENCODER_TICK = 2_rad*units::constants::pi / DjiMotor::ENC_RESOLUTION;
+        static constexpr radian_t INCLINATION_MIN = 0_rad;
+        static constexpr radian_t INCLINATION_MAX = radian_t{M_PI}; // straight down
+
 
         DjiMotor rotationMotor;
         DjiMotor inclinationMotor;
@@ -51,7 +57,9 @@ namespace tr::control::turret {
         SimplePIDController<int32_t> inclinationPID;
 
         bool shouldFire;
+        /// measured relative to straight ahead
         radian_t targetRotation;
+        /// measured down from the horizontal
         radian_t targetInclination;
         uint32_t prevTime;
     };
