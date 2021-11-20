@@ -71,6 +71,14 @@ class ChassisSubsystem : public tap::control::Subsystem {
          */
         [[nodiscard]] mockable inline meter_t getCurrentPos() const { return currentPos; };
 
+        // getters
+        const DjiMotor &getFrontMotor() const;
+        const DjiMotor &getBackMotor() const;
+        bool getPidState() const;
+        int32_t getDesiredOutputFront() const;
+        int32_t getDesiredOutputBack() const;
+        revolutions_per_minute_t getDesiredShaftRpm() const;
+
     private:
         static constexpr tap::motor::MotorId FRONT_MOTOR_ID = tap::motor::MOTOR2;
         static constexpr tap::motor::MotorId BACK_MOTOR_ID = tap::motor::MOTOR3;

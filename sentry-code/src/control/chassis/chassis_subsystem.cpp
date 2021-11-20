@@ -62,4 +62,28 @@ namespace tr::control {
         // we use int32_t to deal with rpm/motor stuff internally, so convert here
         desiredShaftRpm = units::unit_cast<int32_t>(rpm);
     }
+
+    const DjiMotor &ChassisSubsystem::getFrontMotor() const {
+        return frontMotor;
+    }
+
+    const DjiMotor &ChassisSubsystem::getBackMotor() const {
+        return backMotor;
+    }
+
+    bool ChassisSubsystem::getPidState() const {
+        return isUsingPid;
+    }
+
+    int32_t ChassisSubsystem::getDesiredOutputFront() const {
+        return desiredOutputFront;
+    }
+
+    int32_t ChassisSubsystem::getDesiredOutputBack() const {
+        return desiredOutputBack;
+    }
+
+    revolutions_per_minute_t ChassisSubsystem::getDesiredShaftRpm() const {
+        return revolutions_per_minute_t(desiredShaftRpm);
+    }
 }
