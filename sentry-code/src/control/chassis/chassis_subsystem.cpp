@@ -36,20 +36,30 @@ namespace tr::control {
 
             desiredOutputFront = frontMotorPID.iterate(frontError, dt);
             desiredOutputBack = backMotorPID.iterate(backError, dt);
+
+            // Limit output values
+            desiredOutputBack = std::clamp(desiredOutputBack, -MOTOR_MAX, MOTOR_MAX);
+            desiredOutputFront = std::clamp(desiredOutputFront, -MOTOR_MAX, MOTOR_MAX);
         }
         prevTime = currentTime;
         currentPos = frontMotor.getEncoderUnwrapped() * DISTANCE_PER_ENCODER_TICK;
-        volatile float posToWatch = currentPos.value();
-//        frontMotor.setDesiredOutput(desiredOutputFront);
-//        backMotor.setDesiredOutput(desiredOutputBack);
+
+
+        // set motor outputs
+        frontMotor.setDesiredOutput(desiredOutputFront);
+        backMotor.setDesiredOutput(desiredOutputBack);
     }
 
-    void ChassisSubsystem::setDesiredOutput(int16_t desiredOutput) {
+    void ChassisSubsystem::setDesiredOutput(int32_t desiredOutput) {
         isUsingPid = false;
-        desiredOutputFront = desiredOutputBack = desiredOutput;
+        desiredOutputFront = desiredOutputBack = std::clamp(desiredOutput, -MOTOR_MAX, MOTOR_MAX);
     }
 
     void ChassisSubsystem::setDesiredRpm(revolutions_per_minute_t rpm) {
+        rpm = std::clamp(rpm, -RPM_MAX, RPM_MAX);
+        isUsingPid = true;
+        prevTime = getTimeMilliseconds();
+        // we use int32_t to deal with rpm/motor stuff internally, so convert here
         desiredShaftRpm = units::unit_cast<int32_t>(rpm);
     }
 }

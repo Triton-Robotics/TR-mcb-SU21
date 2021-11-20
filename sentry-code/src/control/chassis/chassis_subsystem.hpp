@@ -62,7 +62,7 @@ class ChassisSubsystem : public tap::control::Subsystem {
          * of the aforementioned methods is called again.
          * @param desiredOutput The desired motor output.
          */
-        mockable void setDesiredOutput(int16_t desiredOutput);
+        mockable void setDesiredOutput(int32_t desiredOutput);
 
         /**
          * Returns the current position of the robot, calculated by multiplying the net encoder position since motor
