@@ -73,11 +73,13 @@ class ChassisSubsystem : public tap::control::Subsystem {
 
     private:
         static constexpr tap::motor::MotorId FRONT_MOTOR_ID = tap::motor::MOTOR2;
-        static constexpr tap::motor::MotorId BACK_MOTOR_ID = tap::motor::MOTOR1;
+        static constexpr tap::motor::MotorId BACK_MOTOR_ID = tap::motor::MOTOR3;
         static constexpr tap::can::CanBus MOTOR_CAN_BUS = tap::can::CanBus::CAN_BUS1;
         static constexpr meter_t WHEEL_RADIUS = 60_mm; //TODO: make this actual value
-        // TODO: fix this -- math might not be right (not sure if ENC_RESOLUTION is correct for M3508)
         static constexpr meter_t DISTANCE_PER_ENCODER_TICK = 2.0*units::constants::pi/ DjiMotor::ENC_RESOLUTION * WHEEL_RADIUS;
+        static constexpr int32_t MOTOR_MAX = 3000;
+        // motor is rated for 469 rpm (nice), but we'll limit it slightly lower just to be safe
+        static constexpr revolutions_per_minute_t RPM_MAX = 425_rpm;
 
         DjiMotor frontMotor;
         DjiMotor backMotor;

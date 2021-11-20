@@ -9,7 +9,7 @@ namespace tr::control {
         // "front" motor is the motor towards the face the red switch on top faces
         frontMotor(drivers, FRONT_MOTOR_ID, MOTOR_CAN_BUS, false, "front motor"),
         backMotor(drivers, BACK_MOTOR_ID, MOTOR_CAN_BUS, false, "rear motor"),
-        frontMotorPID(0.1, 0.0, 0.0), backMotorPID(0.1, 0.0, 0.0), // TODO: Tune these constants
+        frontMotorPID(5.0, 0.0, 0.0), backMotorPID(5.0, 0.0, 0.0),
         currentPos(0_m), defaultCommand(drivers, *this), isUsingPid(true), prevTime(getTimeMilliseconds()),
         desiredOutputFront(0), desiredOutputBack(0), desiredShaftRpm(0)
     {
